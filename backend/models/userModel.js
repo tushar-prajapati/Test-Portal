@@ -21,18 +21,13 @@ const userSchema = mongoose.Schema({
         type: Date,
         required: true,
     },
-    department: {
+    section: {
         type: String,
         required: true,
     },
     semester: {
         type: Number,
         required: true,
-    },
-    phone: {
-        type: String,
-        required: true,
-        unique: true,
     },
     role: {
         type: String,

@@ -3,6 +3,8 @@ import asyncHandler from '../middlewares/asyncHandler.js';
 import generateToken  from "../utils/generateToken.js";
 import {ApiError} from "../utils/apiError.js";
 import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
+import otpGenerator from "otp-generator";
 
 const createAdmin = asyncHandler(async (req, res) => {
         const { name, email, password, department } = req.body;
@@ -71,4 +73,80 @@ const logoutAdmin = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
 });
 
-export { createAdmin, loginAdmin, logoutAdmin };
+const sendOtp = asyncHandler(async (req, res) => {
+    try {
+        const { email } = req.body;
+    
+        const admin = await Admin.findOne({email});
+        if (!admin) {
+            throw new ApiError(404, "Admin not found");
+        }
+        const otp = otpGenerator.generate(4, { digits: true, specialChars: false,lowerCaseAlphabets: false, upperCaseAlphabets: false });
+    
+        admin.otp = otp;
+        admin.otpExpires = Date.now() + 5 * 60 * 1000;
+        await admin.save();
+        
+        const transporter = nodemailer.createTransport({
+            secure: true,
+            host: "smtp.gmail.com",
+            port: 465,
+            service: "Gmail",
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+        });
+    
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Your OTP for password reset",
+            text: `Your OTP is ${otp}`,
+          });
+        
+          res.status(200).json({ success:true, msg: "OTP sent successfully" });
+    
+    } catch (error) {
+        console.error("Error sending OTP:", error);
+        throw new ApiError(500, "Failed to send OTP");
+        
+    }
+});
+
+const verifyOtp = asyncHandler(async (req, res) => {
+    const {email, otp} = req.body;
+    const admin = await Admin.findOne({ email });
+    if(!admin){
+        throw new ApiError(404, "Admin not found");
+    }
+    if(!admin.otp || admin.otp !== otp || admin.otpExpires < Date.now()){
+        throw new ApiError(400, "Invalid or expired OTP");
+    }
+    admin.isOtpVerified = true;
+    admin.otp = undefined;
+    admin.otpExpires = undefined;
+    await admin.save();
+    res.status(200).json({ success: true, msg: "OTP verified successfully" });
+})
+
+const updatePassword = asyncHandler(async(req, res) => {
+    const { email, password } = req.body;
+    if(!email || !password){
+        throw new ApiError(400, "Email and new password are required");
+    }
+    const admin = await Admin.findOne({ email });
+    if(!admin.isOtpVerified){
+        throw new ApiError(403, "OTP not verified");
+    }
+    if(!admin){
+        throw new ApiError(404, "Admin not found");
+    }
+    const salt = await bcrypt.genSalt(10);
+    admin.password = await bcrypt.hash(password, salt);
+    admin.isOtpVerified = false; 
+    await admin.save();
+    res.status(200).json({ success: true, msg: "Password updated successfully" });
+})
+
+export { createAdmin, loginAdmin, logoutAdmin, sendOtp, verifyOtp, updatePassword };

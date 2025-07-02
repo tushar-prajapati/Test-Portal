@@ -25,6 +25,9 @@ const adminSchema = mongoose.Schema({
         required: true,
     },
     image: String,
+    otp: String,
+    otpExpires: Date,
+    isOtpVerified: { type: Boolean, default: false },
 
 },{timestamps: true});
 

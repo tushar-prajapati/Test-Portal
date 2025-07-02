@@ -26,10 +26,38 @@ export const adminApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Admin'],
         }),
+        sendOtp: builder.mutation({
+            query: ({email}) => ({
+                url: `${ADMINS_URL}/send-otp`,
+                method: 'POST',
+                body: { email },
+            }),
+            invalidatesTags: ['Admin'],
+        }),
+        verifyOtp: builder.mutation({
+            query: ({email, otp}) => ({
+                url: `${ADMINS_URL}/verify-otp`,
+                method: 'POST',
+                body: { email, otp },
+            }),
+            invalidatesTags: ['Admin'],
+        }),
+        updatePassword: builder.mutation({
+            query: ({ email, password }) => ({
+                url: `${ADMINS_URL}/updatepassword`,
+                method: 'POST',
+                body: { email, password },
+            }),
+            invalidatesTags: ['Admin'],
+        }),
+        
     }),
 })
 
 export const { useCreateAdminMutation,
      useLoginAdminMutation, 
-useLogoutAdminMutation
+useLogoutAdminMutation,
+        useSendOtpMutation,
+        useVerifyOtpMutation,
+        useUpdatePasswordMutation
  } = adminApiSlice;

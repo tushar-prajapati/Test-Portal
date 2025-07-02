@@ -170,19 +170,12 @@ const TeacherRegister = () => {
             />
           </div>
 
-          <div className="text-right">
-            <button
-              type="button"
-              className="cursor-pointer text-sm text-gray-500 hover:underline"
-            >
-              Forgot Password?
-            </button>
-          </div>
+          
 
           <button
             disabled={isLoading}
             type="submit"
-            className="cursor-pointer w-full bg-black text-white py-2 rounded-md font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition"
+            className="mt-10 cursor-pointer w-3/4 hover:w-full transition-all duration-300 ease-in-out bg-black text-white py-2 rounded-md font-medium flex items-center justify-center gap-2 hover:bg-gray-800 "
           >{isLoading? "Getting Started...": "Get Started →"}
           </button>
         {isLoading && <Loader />}

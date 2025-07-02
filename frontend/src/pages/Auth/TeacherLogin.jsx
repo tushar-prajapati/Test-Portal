@@ -16,7 +16,7 @@ const TeacherLogin = () => {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const redirect = sp.get("redirect") || "/teacherdashboard";
+  const redirect = sp.get("redirect") || "/admin/dashboard";
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loginAdmin, { isLoading }] = useLoginAdminMutation();
@@ -106,12 +106,13 @@ const TeacherLogin = () => {
           </div>
 
           <div className="text-right">
-            <button
-              type="button"
+          <NavLink
+              to={'/forgotpassword'}
               className="cursor-pointer text-sm text-gray-500 hover:underline"
             >
-              Forgot Password?
-            </button>
+            Forgot Password?
+            </NavLink>
+            
           </div>
 
           <button

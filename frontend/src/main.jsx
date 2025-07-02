@@ -10,6 +10,13 @@ import StudentLogin from './pages/Auth/StudentLogin.jsx'
 import TeacherLogin from './pages/Auth/TeacherLogin.jsx'
 import TeacherRegister from './pages/Auth/TeacherRegister.jsx'
 import AdminDashboard from './pages/Admin/AdminDashboard.jsx'
+import ForgotPassword from './pages/Admin/ForgotPassword.jsx'
+import AdminLayout from './components/AdminLayout.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
+import Tests from './pages/Admin/Tests.jsx'
+import Results from './pages/Admin/Results.jsx'
+import Students from './pages/Admin/Students.jsx'
+import UpdateProfile from './pages/Admin/UpdateProfile.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,7 +25,20 @@ const router = createBrowserRouter(
     <Route path='studentlogin' element={<StudentLogin/>}/>
     <Route path='teacherlogin' element={<TeacherLogin/>}/>
     <Route path='/register' element={<TeacherRegister/>}/>
-    <Route path='teacherdashboard' element={<AdminDashboard/>}/>
+    <Route path='/forgotpassword' element={<ForgotPassword/>}/>
+
+    <Route path='' element={<ProtectedRoute/>}>
+      <Route path='/admin' element={<AdminLayout/>}>
+      <Route path='dashboard' element={<AdminDashboard/>}/>
+      <Route path='tests' element={<Tests/>}/>
+      <Route path='students' element={<Students/>}/>
+      <Route path='results' element={<Results/>}/>
+        
+      </Route>
+
+    </Route>
+
+    
       
     </Route>
   )
