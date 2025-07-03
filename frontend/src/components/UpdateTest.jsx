@@ -9,33 +9,55 @@ const UpdateTest = ({testId, onClose}) => {
     const {data: testData, isLoading, isError} = useFetchTestByIdQuery(testId);
     const {userInfo} = useSelector((state)=>state.auth)
 
-    console.log(testData)
     const [test, setTest] = useState({
         title: '',
         description: '',
         durationHours: null,
         durationMinutes: null,
         questions: [],
+        date: null,
+        time: null,
       });
+    const handleTestChange = (e) => {
+        const { name, value } = e.target;
+        setTest((prev) => ({ ...prev, [name]: value }));
+    };
+    
 
     useEffect(()=>{
         if(!isLoading && !isError){
+            const date = new Date(testData.test.testDateTime)
+            const dateValue = date.toISOString().split("T")[0];
+            const timeValue = date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              });
+
             setTest({
                 title: testData.test.title,
                 description: testData.test.description,
                 durationHours: testData.test.durationMinutes/60,
                 durationMinutes: testData.test.durationMinutes%60,
                 questions: testData.test.questions,
+                date: dateValue,
+                time: timeValue
               });
         }
     }, [testData])
-    
+    console.log(test.dateTime)
     if(isLoading){
         return <div className='h-full w-full flex items-center justify-center'><Loader/></div>
     }
     if(isError){
         return  <div className="text-red-500">Error fetching test. Please try again later.</div>;
     }
+
+    const handleSubmit = (e)=> {
+        e.preventDefault();
+        onClose();
+
+}
   return (
     <div className="py-2 px-12 w-full  space-y-2">
       <div className="w-full flex justify-center ">
@@ -48,14 +70,14 @@ const UpdateTest = ({testId, onClose}) => {
         placeholder="Test Title"
         className="w-full bg-gray-100 focus:outline-black border-1 border-gray-300 text-sm px-2 py-1 rounded"
         value={test.title}
-        // onChange={handleTestChange}
+        onChange={handleTestChange}
       />
       <textarea
         name="description"
         placeholder="Description"
         className="w-full bg-gray-100 focus:outline-black border-1 border-gray-300 text-sm px-2 py-1 rounded"
         value={test.description}
-        // onChange={handleTestChange}
+        onChange={handleTestChange}
       />
       <label htmlFor="duration" className="flex text-sm navText">
         Duration:
@@ -68,7 +90,7 @@ const UpdateTest = ({testId, onClose}) => {
         placeholder="Hours"
         className="w-1/2 bg-gray-100 focus:outline-black border-1 border-gray-300 text-sm px-2 py-1 rounded"
         value={Math.floor(test.durationHours)}
-      //   onChange={handleTestChange}
+        onChange={handleTestChange}
         />
 
         <input
@@ -77,7 +99,7 @@ const UpdateTest = ({testId, onClose}) => {
           placeholder="Minutes"
           className="w-1/2 bg-gray-100 focus:outline-black border-1 border-gray-300 text-sm px-2 py-1 rounded"
           value={test.durationMinutes}
-        //   onChange={handleTestChange}
+          onChange={handleTestChange}
         />
       </div>
 
@@ -89,16 +111,16 @@ const UpdateTest = ({testId, onClose}) => {
           type="date"
           id="date"
           name="date"
-        //   value={date}
-        //   onChange={(e) => setDate(e.target.value)}
+          value={test.date}
+          onChange={handleTestChange}
           className="w-1/2 bg-gray-100 focus:outline-black border-1 border-gray-300 text-sm px-2 py-1 rounded"
         />
         <input
           type="time"
           id="time"
           name="time"
-        //   value={time}
-        //   onChange={(e) => setTime(e.target.value)}
+          value={test.time}
+          onChange={handleTestChange}
           className="w-1/2 bg-gray-100 focus:outline-black border-1 border-gray-300 text-sm px-2 py-1 rounded"
         />
       </div>
@@ -175,10 +197,10 @@ const UpdateTest = ({testId, onClose}) => {
 
       <div className="flex justify-end">
         <button
-        //   onClick={handleSubmit}
+          onClick={handleSubmit}
           className="mt-2 text-sm cursor-pointer bg-black text-white px-3 py-2 rounded hover:bg-[#212121] transition duration-300 ease-in-out"
         >
-          Add Test +
+          Update
         </button>
       </div>
     </div>

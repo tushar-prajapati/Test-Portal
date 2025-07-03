@@ -14,4 +14,7 @@ const fetchQuestionById = asyncHandler(async(req,res)=>{
     })
 })
 
+const fetchQuestionsByTestId =
+
+
 export {fetchQuestionById}
