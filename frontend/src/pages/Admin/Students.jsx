@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import OverlayModal from '../../components/OverlayModal.jsx'
 import BlackModal from '../../components/BlackModal.jsx';
 import plus from '../../assets/vectors/Plus.png'
 import { toast } from 'react-toastify';
-import { useCreateUserMutation } from '../../redux/api/userApiSlice.js';
+import { useCreateUserMutation, useGetAllUsersQuery, useToggleUserMutation } from '../../redux/api/userApiSlice.js';
 import Loader from '../../components/Loader.jsx';
+import WhiteModal from '../../components/WhiteModal.jsx';
+
+
 
 const Students = () => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -16,6 +19,10 @@ const Students = () => {
     const [semester, setSemester] = useState('');
     const [dob, setDob] = useState(null);
     const [createUser, { isLoading }] = useCreateUserMutation();
+    const {data: users, refetch, isLoading: isUsersLoading, error: isUsersError} = useGetAllUsersQuery();
+    const [toggleUser] = useToggleUserMutation();
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(!name || !email || !roll || !section || !semester || !dob) {
@@ -59,6 +66,30 @@ const Students = () => {
         }
         
     }
+
+    const handleChange =async (index) => {
+      try {
+        const user = users[index];
+        const id = user._id;
+        const res = await toggleUser(id).unwrap();
+        if (res?.success) {
+          toast.success(`Student status updated successfully`);
+          refetch();
+        }
+        else {
+          toast.error(res?.error?.data?.message || res?.error.error || "Failed to update student status. Please try again.");
+        }
+
+        
+      } catch (error) {
+        console.error(error?.error || error?.data?.message || "Failed to update student status. Please try again.");
+        
+      }
+    }
+    
+
+
+    
     
   return (
     <div>
@@ -68,6 +99,58 @@ const Students = () => {
                 <img src={plus} className='h-8 w-8' alt="" />
             </div>
         </BlackModal>
+
+        <WhiteModal height='h-[32rem]'>
+        { isUsersLoading ? <div className='w-full h-full flex items-center justify-center'> <Loader/></div> : isUsersError ? <div className='w-full h-full flex items-center justify-center'><p className='text-red-500'>!Failed to load students</p> </div> :(
+      <div className="max-w-full">
+      <div className="max-h-[400px] overflow-y-scroll">
+        
+        <table className="min-w-full text-center">
+
+        <thead className=" text-black text-sm font-semibold sticky top-0 z-10 bg-white/50">
+          <tr>
+            <th className="px-2 py-1 ">S.no</th>
+            <th className="px-2 py-1 ">Name</th>
+            <th className="px-2 py-1 ">Email</th>
+            <th className="px-2 py-1 ">Roll No.</th>
+            <th className="px-2 py-1 ">Section</th>
+            <th className="px-2 py-1 text-center">Enable/disable </th>
+            
+          </tr>
+        </thead>
+          <tbody className="text-black text-sm">
+            {users.map((student, index) => (
+              <tr key={index} className="border-t">
+                <td className="px-2 text-xs py-1 bg-white border-4 border-[#f4f4f4]">{index + 1}</td>
+                <td className="px-2 text-xs py-1 bg-white border-4 border-[#f4f4f4]">{student.name}</td>
+                <td className="px-2 text-xs py-1 bg-white border-4 border-[#f4f4f4]">{student.email}</td>
+                <td className="px-2 text-xs py-1 bg-white border-4 border-[#f4f4f4]">{student.universityRoll}</td>
+                <td className="px-2 text-xs py-1 bg-white border-4 border-[#f4f4f4]">{student.section}</td>
+                <td className="px-2 text-xs py-1 bg-white border-4 border-[#f4f4f4]">
+                  <div className='w-full flex justify-center'>
+                    <button onClick={
+                      () => handleChange(index)
+                    } className={`${student.isActive? "bg-green-500 hover:bg-green-600" :"bg-red-500 hover:bg-red-600"} cursor-pointer rounded text-white py-1 px-2`}>
+                      {student.isActive ? "Enabled" : "Disabled"}
+                    </button>
+                 </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+          )}
+        </WhiteModal>
+
+
+
+
+
         <OverlayModal isOpen={modalOpen} onClose={() => setModalOpen(false)} >
 
         <div className="px-24 pt-2 pb-16">
@@ -138,7 +221,7 @@ const Students = () => {
         <div className="flex justify-end mt-6">
         { isLoading? <Loader/>: <button
             onClick={handleSubmit}
-            className="px-6 py-2 border  text-white bg-black cursor-pointer rounded-lg hover:bg-[#212121] flex items-center"
+            className="px-6 py-2 border mb-10 text-white bg-black cursor-pointer rounded-lg hover:bg-[#212121] flex items-center"
           >
             Add +
           </button>
@@ -148,6 +231,8 @@ const Students = () => {
         </div> 
         </div>
         </OverlayModal>
+
+        
 
     </div>
   )

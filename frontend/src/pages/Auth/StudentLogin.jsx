@@ -1,21 +1,59 @@
 import React from 'react'
 import LandingModal from '../../components/LandingModal.jsx'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import stackImage from '../../assets/images/stack.png'
 import logo from '../../assets/images/logo.png'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { useLoginUserMutation } from '../../redux/api/userApiSlice.js'
+import { useDispatch } from 'react-redux'
+import { setCredentials } from '../../redux/features/auth/authSlice.js'
+import Loader from '../../components/Loader.jsx'
+import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 const StudentLogin = () => {
     const [isOpen, setIsOpen] = useState(true)
     const navigate = useNavigate();
     const [roll, setRoll] = useState('');
     const [dob, setDob] = useState(null);
+    const [loginUser, {isLoading}] = useLoginUserMutation();
+
+    const { userInfo } = useSelector((state) => state.auth);
+    const { search } = useLocation();
+    const sp = new URLSearchParams(search);
+    const redirect = sp.get("redirect") || "/student/dashboard";
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if(userInfo){
+            navigate(redirect);
+        }
+    }, [userInfo, navigate, redirect]);
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit =async (e) => {
         e.preventDefault();
-        setIsOpen(false);
-        navigate('/studentdashboard')
+        if(!roll || !dob) {
+            toast.error("All fields are required");
+            return;
+        }
+        try {
+          const res = await loginUser({roll, dob}).unwrap();
+          if(res?.success) {          
+            setRoll('');
+            setDob(null);
+            setIsOpen(false);
+          dispatch(setCredentials({ ...res }));
+          toast.success(`Welcome back ${res.name}`);
+          }
+          else {
+            toast.error(res?.message || "Login failed");
+          }
+
+        } catch (error) {
+          toast.error(error?.data?.messagen|| error?.error || "Something went wrong");
+        }
+        
     }
 
   return (
@@ -60,12 +98,12 @@ const StudentLogin = () => {
               />
             </div>
 
-            <button
+            {isLoading ? <Loader/> :<button
               type="submit"
               className="cursor-pointer w-full mt-4 bg-black text-white py-2 rounded-md font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition"
             >
               Get started →
-            </button>
+            </button>}
           </form>
         </div>
       </div>

@@ -17,6 +17,10 @@ import Tests from './pages/Admin/Tests.jsx'
 import Results from './pages/Admin/Results.jsx'
 import Students from './pages/Admin/Students.jsx'
 import UpdateProfile from './pages/Admin/UpdateProfile.jsx'
+import UserLayout from './components/UserLayout.jsx'
+import UserDashboard from './pages/User/UserDashboard.jsx'
+import UserTests from './pages/User/UserTests.jsx'
+import UserResults from './pages/User/UserResults.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -36,7 +40,16 @@ const router = createBrowserRouter(
         
       </Route>
 
+      <Route path='/student' element={<UserLayout/>}>
+      <Route path='dashboard' element={<UserDashboard/>}/>
+      <Route path='tests' element={<UserTests/>}/>
+      <Route path='results' element={<UserResults/>}/>
+      
+        
+      </Route>
+
     </Route>
+  
 
     
       

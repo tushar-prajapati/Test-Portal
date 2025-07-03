@@ -149,4 +149,40 @@ const updatePassword = asyncHandler(async(req, res) => {
     res.status(200).json({ success: true, msg: "Password updated successfully" });
 })
 
-export { createAdmin, loginAdmin, logoutAdmin, sendOtp, verifyOtp, updatePassword };
+const updateAdmin = asyncHandler(async (req, res) => {
+    const { name, email, department, password } = req.body;
+    const { id } = req.params;
+
+    if (!name || !email || !department) {
+        throw new ApiError(400, "All fields are required");
+    }
+
+    const admin = await Admin.findById(id);
+    if (!admin) {
+        throw new ApiError(404, "Admin not found");
+    }
+
+    admin.name = name;
+    admin.email = email.toLowerCase();
+    admin.department = department;
+    if(password){
+        const salt = await bcrypt.genSalt(10);
+        admin.password = await bcrypt.hash(password, salt);
+    }
+    
+
+    try {
+        await admin.save();
+        res.status(200).json({
+            success: true,
+            _id: admin._id,
+            name: admin.name,
+            email: admin.email,
+            department: admin.department
+        });
+    } catch (error) {
+        throw new ApiError(500, "Server error");
+    }
+})
+
+export { createAdmin, loginAdmin, logoutAdmin, sendOtp, verifyOtp, updatePassword, updateAdmin };

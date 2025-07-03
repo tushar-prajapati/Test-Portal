@@ -50,6 +50,14 @@ export const adminApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Admin'],
         }),
+        updateAdmin: builder.mutation({
+            query: ({ id, adminData }) => ({
+                url: `${ADMINS_URL}/${id}`,
+                method: 'PUT',
+                body: adminData,
+            }),
+            invalidatesTags: ['Admin'],
+        }),
         
     }),
 })
@@ -59,5 +67,6 @@ export const { useCreateAdminMutation,
 useLogoutAdminMutation,
         useSendOtpMutation,
         useVerifyOtpMutation,
-        useUpdatePasswordMutation
+        useUpdatePasswordMutation,
+        useUpdateAdminMutation
  } = adminApiSlice;

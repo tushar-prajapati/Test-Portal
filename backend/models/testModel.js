@@ -27,17 +27,16 @@ const testSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+  testDateTime: {
+    type: Date,
+    required: true,
+  },
 }, {
   timestamps: true
 });
 
-// testSchema.pre('validate', function (next) {
-//   if (!this.testCode) {
-//     this.testCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-//   }
-//   next();
-// });
+
 
 const Test = mongoose.model('Test', testSchema);
 export default Test;

@@ -30,7 +30,7 @@ const OverlayModal = ({ isOpen, onClose, children }) => {
       >
         <div className='h-6 w-full flex justify-end'><RxCross1
         onClick={onClose}
-        className='cursor-pointer text-lg'/></div>
+        className='cursor-pointer text-black text-lg'/></div>
         <div className='w-full h-full '>
 
 

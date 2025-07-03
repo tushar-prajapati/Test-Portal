@@ -4,8 +4,10 @@ import { createAdmin,
         logoutAdmin,
         sendOtp,
         updatePassword,
-        verifyOtp
+        verifyOtp,
+        updateAdmin
  } from "../controllers/adminController.js";
+ import { authenticateAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
@@ -15,5 +17,8 @@ router.route('/logout').post(logoutAdmin);
 router.route('/send-otp').post(sendOtp);
 router.route('/verify-otp').post(verifyOtp);
 router.route('/updatepassword').post(updatePassword)
+
+// Secured Routes:
+router.route('/:id').put( authenticateAdmin, updateAdmin);
 
 export default router;

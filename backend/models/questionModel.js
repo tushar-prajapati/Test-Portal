@@ -7,12 +7,12 @@ const questionSchema = new mongoose.Schema({
   },
   options: [
     {
-      text: String,
+      type: String,
       _id: false
     }
   ],
   correctIndex: {
-    type: Number, // Index of the correct option in the options array
+    type: Number, 
     required: true
   },
   marks: {
@@ -23,4 +23,5 @@ const questionSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Question', questionSchema);
+const Question = mongoose.model('Question', questionSchema);
+export default Question;
