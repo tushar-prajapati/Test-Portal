@@ -49,7 +49,7 @@ const UserResults = () => {
   }
   
   return (
-    <WhiteModal height="h-[42rem]">
+    <WhiteModal height="h-[39rem]">
       {isLoading ? (
         <div className='w-full h-full flex items-center justify-center'>
           <Loader/>

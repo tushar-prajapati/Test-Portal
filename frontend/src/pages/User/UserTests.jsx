@@ -76,7 +76,7 @@ const UserTests = () => {
         <AddTest onClose={()=>setShowModal(false)}/>
       </OverlayModal>
 
-      <WhiteModal height="max-h-[35rem] overflow-y-scroll">
+      <WhiteModal height="max-h-[32rem] overflow-y-scroll">
         <div className='mt-4 px-4'>
         
         
