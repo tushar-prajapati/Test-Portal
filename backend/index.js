@@ -17,7 +17,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-    origin: ["https://test-portal-bay.vercel.app/"],
+    origin: "*",
   credentials: true,
 }))
 app.use(express.json());
