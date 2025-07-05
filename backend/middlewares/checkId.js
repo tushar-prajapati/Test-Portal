@@ -1,5 +1,5 @@
 import { isValidObjectId } from "mongoose";
-import { ApiError } from "../utils/apiError.js";
+import { ApiError } from "../utils/ApiError.js";
 
 function checkId(req,res,next){
     if(!isValidObjectId(req.params.id)){
