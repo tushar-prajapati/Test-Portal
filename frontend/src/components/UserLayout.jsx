@@ -30,7 +30,6 @@ const UserLayout = () => {
   const logoutHandler = async (e) => {
     e.preventDefault();
     try {
-        console.log("Logging out user");
       await logoutUser().unwrap();
       dispatch(logout());
       navigate("/studentlogin");

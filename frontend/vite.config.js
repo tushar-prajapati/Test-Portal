@@ -15,11 +15,12 @@ export default defineConfig({
       },
     },
   }), flowbiteReact()],
+  // comment these lines while deploying to production
   // server: {
   //   proxy: {
-  //     // '/api/': "http://localhost:3000",
-  //     '/api/': "https://test-portal-79im.onrender.com",
+  //     '/api/': "http://localhost:3000",
   //     // '/uploads/': "http://localhost:3000",
   //   }
   // },
+
 })
