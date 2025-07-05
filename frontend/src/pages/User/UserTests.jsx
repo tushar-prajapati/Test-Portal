@@ -14,6 +14,9 @@ import { FaClock } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import { FaQuestionCircle } from "react-icons/fa";
 import { Loader } from 'lucide-react';
+import FullScreenTestWindow from './FullScreenTestWindow.jsx';
+import { set } from 'mongoose';
+
 
 
 
@@ -28,6 +31,8 @@ const UserTests = () => {
   const [testId, setTestId] = useState('');
   const {data: testDetails, refetch, isLoading:fetchingTest} = useFetchTestByIdQuery(testId)
   const [time, setTime] = useState('');
+  const [openTest, setOpenTest] = useState(false);
+
 
   const openInstructionsHandler =async (e, testId) => {
     e.preventDefault();
@@ -44,6 +49,14 @@ const UserTests = () => {
     setOpenInstructions(true);
   }
 
+  const startTestHandler =  (e) => {
+    e.preventDefault();
+
+  
+    setTimeout(() => {
+      setOpenTest(true);  
+    }, 300);
+  }
 
 
 
@@ -96,7 +109,10 @@ const UserTests = () => {
 
     ))}
 
-    <OverlayModal isOpen={openInstructions} onClose={() => setOpenInstructions(false)}>
+    <OverlayModal isOpen={openInstructions} onClose={() =>
+      {
+        setOpenTest(false);
+      setOpenInstructions(false)}}>
       {fetchingTest? <div><Loader/></div>:(
 
     <div className="flex  text-black rounded-xl w-full max-w-3xl mx-auto">
@@ -108,7 +124,7 @@ const UserTests = () => {
       />
       <h1 className='py-4 navText'>THE TEST BEGINS AT {time}</h1>
       <p className='py-4 mb-12 px-14 text-sm text-center text-gray-500 font-light'>Please wait patiently and use this time to revise your notes until the test begins</p>
-      <p className='py-4 mb-12 px-14 text-sm text-center text-black font-light'><span className='navText underline'>NOTE:</span> Once you END test, you cannot reattempt it</p>
+      <p className='py-4 mb-12 px-14 text-sm text-center text-red-600 font-light'><h1 className='navText underline'>NOTE:</h1> <h2 className='flex items-center'><FaArrowRight className='text-xs mr-2'/>Once you END test, you cannot reattempt it</h2><h2 className='flex items-center'><FaArrowRight className='text-xs mr-2'/>DO NOT press ESC</h2> </p>
     </div>
 
   <div className="h-auto w-px bg-gradient-to-b from-transparent via-gray-700 to-transparent mx-4"></div>
@@ -135,9 +151,20 @@ const UserTests = () => {
     </div>
     </div>
 
-    <button className="mt-6 mr-4 self-end cursor-pointer text-white px-10 py-2 rounded-xl hover:bg-gray-700 bg-black transition-all duration-300 ease-in-out flex items-center gap-2">
+    <button 
+    onClick={startTestHandler}
+    className="mt-6 mr-4 self-end cursor-pointer text-white px-10 py-2 rounded-xl hover:bg-gray-700 bg-black transition-all duration-300 ease-in-out flex items-center gap-2">
       Start <span className="text-lg">→</span>
     </button>
+    {openTest && <FullScreenTestWindow onAutoSubmit={()=>{
+      setOpenTest(false)
+      setOpenInstructions(false)
+    }
+    } isOpen={openTest} onClose={()=>{
+      setOpenTest(false)
+      setOpenInstructions(false)
+      
+      }}/>}
   </div>
 </div>
       )}
@@ -184,6 +211,8 @@ const UserTests = () => {
         </div>
 
         </WhiteModal>
+       
+
     </div>
   )
 }
