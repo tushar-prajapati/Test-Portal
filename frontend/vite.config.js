@@ -15,11 +15,11 @@ export default defineConfig({
       },
     },
   }), flowbiteReact()],
-  server: {
-    proxy: {
-      // '/api/': "http://localhost:3000",
-      '/api/': "https://test-portal-79im.onrender.com",
-      // '/uploads/': "http://localhost:3000",
-    }
-  },
+  // server: {
+  //   proxy: {
+  //     // '/api/': "http://localhost:3000",
+  //     '/api/': "https://test-portal-79im.onrender.com",
+  //     // '/uploads/': "http://localhost:3000",
+  //   }
+  // },
 })
