@@ -17,7 +17,7 @@ const authenticateAdmin = asyncHandler( async (req,res,next)=>{
             throw new ApiError(401, "Not Authorized, Please Login Again")
         }
     } else{
-        throw new ApiError(401, "Not Authorized, Please Login Again")
+        throw new ApiError(402, "Not Authorized, Please Login Again")
     }
 
 })
