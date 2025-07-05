@@ -4,7 +4,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Loader from "./Loader.jsx";
 import { useSelector, useDispatch } from "react-redux";
-import { set } from "mongoose";
 import { useUpdateAdminMutation } from "../redux/api/adminApiSlice.js";
 import { setCredentials } from "../redux/features/auth/authSlice.js";
 

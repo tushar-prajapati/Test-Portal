@@ -23,7 +23,6 @@ import {
   useUpdateUserMutation,
 } from "../redux/api/userApiSlice.js";
 import { logout } from "../redux/features/auth/authSlice.js";
-import { set } from "mongoose";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
 import OverlayModal from "./OverlayModal.jsx";
