@@ -2,7 +2,7 @@ import Test from "../models/testModel.js";
 import asyncHandler from '../middlewares/asyncHandler.js';
 import Question from "../models/questionModel.js";
 import User from "../models/userModel.js";
-import { ApiError } from "../utils/apiError.js";
+import { ApiError } from "../utils/ApiError.js";
 
 
 const createTest = asyncHandler(async (req, res) => {

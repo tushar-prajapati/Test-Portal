@@ -1,6 +1,6 @@
 import asyncHandler from '../middlewares/asyncHandler.js';
 import User from "../models/userModel.js";
-import {ApiError} from "../utils/apiError.js";
+import {ApiError} from "../utils/ApiError.js";
 import bcrypt from "bcryptjs";
 import generateToken from '../utils/generateToken.js';
 import Test from '../models/testModel.js';

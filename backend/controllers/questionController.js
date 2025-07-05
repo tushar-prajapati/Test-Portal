@@ -1,6 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Question from "../models/questionModel.js";
-import { ApiError } from "../utils/apiError.js";
+import { ApiError } from "../utils/ApiError.js";
 import Test from '../models/testModel.js'
 
 const fetchQuestionById = asyncHandler(async(req,res)=>{
