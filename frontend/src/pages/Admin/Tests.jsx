@@ -37,7 +37,7 @@ const Tests = () => {
       </OverlayModal>
 
 
-      <WhiteModal height='h-[32rem]'>
+      <WhiteModal height='h-[35rem]'>
         <div className='mx-2 sticky top-0 z-10'>
           <div className='flex'>
             <button onClick={upcomingClickHandler} className={` text-sm py-1 px-2 ${activeTab=='upcoming' ? "bg-[#212121] text-white": "bg-gray-300 text-black cursor-pointer hover:bg-slate-300"}`}>Upcoming</button>

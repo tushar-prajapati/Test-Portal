@@ -100,7 +100,7 @@ const Students = () => {
             </div>
         </BlackModal>
 
-        <WhiteModal height='h-[32rem]'>
+        <WhiteModal height='h-[35rem]'>
         { isUsersLoading ? <div className='w-full h-full flex items-center justify-center'> <Loader/></div> : isUsersError ? <div className='w-full h-full flex items-center justify-center'><p className='text-red-500'>!Failed to load students</p> </div> :(
       <div className="max-w-full">
       <div className="max-h-[400px] overflow-y-scroll">
