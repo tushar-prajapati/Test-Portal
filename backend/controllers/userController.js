@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import {ApiError} from "../utils/apiError.js";
 import bcrypt from "bcryptjs";
 import generateToken from '../utils/generateToken.js';
+import Test from '../models/testModel.js';
 
 const createUser = asyncHandler(async (req, res) => {
     const { name, email, universityRoll, dob, section, semester } = req.body;
@@ -176,5 +177,28 @@ const logoutUser = asyncHandler(async (req, res) => {
     });
 });
 
+const addTestForUser = asyncHandler(async(req,res)=>{
+    const { testCode} = req.body;
+    const {userId} = req.params;
+    console.log(userId)
+    const user = await User.findById(userId);
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+    const test = await Test.findOne({testCode});
+    if(!test){
+        throw new ApiError(404, "Test not found");
+    }
+    user.allowedTests.push(test._id);
+    await user.save();
+    res.status(200).json({
+        success: true,
+        message: "Test added successfully"
+    })
+})
 
-export { createUser, getUser, updateUser,deleteUser , getAllUsers, toggleUser, loginUser, logoutUser };
+
+
+
+
+export { createUser, getUser, updateUser,deleteUser , getAllUsers, toggleUser, loginUser, logoutUser, addTestForUser };

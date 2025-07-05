@@ -62,6 +62,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['User'],
         }),
+        addTest: builder.mutation({
+            query: ({testCode, userId}) =>({
+                url: `${USERS_URL}/addTest/${userId}`,
+                method: 'PUT',
+                body: {testCode},
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 })
 
@@ -73,5 +81,6 @@ export const {
     useGetAllUsersQuery,
     useToggleUserMutation,
     useLoginUserMutation,
-    useLogoutUserMutation
+    useLogoutUserMutation,
+    useAddTestMutation,
  } = userApiSlice;

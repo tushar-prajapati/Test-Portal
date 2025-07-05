@@ -19,4 +19,7 @@ body{
 .navText {
     font-family: myFont2;
 }
+.container {
+    background-image: url('../../assets/images/background.png'); 
+}
 

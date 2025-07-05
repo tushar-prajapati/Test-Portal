@@ -18,6 +18,10 @@ const questionSchema = new mongoose.Schema({
   marks: {
     type: Number,
     default: 1
+  },
+  testId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Test'
   }
 }, {
   timestamps: true

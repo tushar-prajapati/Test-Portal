@@ -1,6 +1,8 @@
 import Test from "../models/testModel.js";
 import asyncHandler from '../middlewares/asyncHandler.js';
 import Question from "../models/questionModel.js";
+import User from "../models/userModel.js";
+import { ApiError } from "../utils/apiError.js";
 
 
 const createTest = asyncHandler(async (req, res) => {
@@ -10,9 +12,12 @@ const createTest = asyncHandler(async (req, res) => {
     if (!title || !Array.isArray(questions) || questions.length === 0 || !id) {
             return res.status(400).json({ message: "All fields are required" });
     }
+    const testCode = `t_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`
+
 
     const savedQuestionDocs = await Promise.all(
         questions.map(async (q) => {
+            q.testCode = testCode;
             q.correctIndex = Number(q.correctIndex);
             q.marks = Number(q.marks);
           const newQuestion = new Question(q);
@@ -27,7 +32,6 @@ const createTest = asyncHandler(async (req, res) => {
 
 
     
-    const testCode = `t_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`
   
     const newTest = new Test({
         title,
@@ -38,8 +42,18 @@ const createTest = asyncHandler(async (req, res) => {
         createdBy: id,
         testDateTime: testDateTime,
     });
+
+
     
-    await newTest.save();
+    const test = await newTest.save();
+
+    savedQuestionDocs.map(async(id)=>{
+        const question = await Question.findById(id);
+        question.testId = test._id;
+        await question.save();
+    })
+
+
     
     res.status(201).json({
         success: true,
@@ -89,7 +103,7 @@ const deleteTestById = asyncHandler(async (req, res) => {
 const fetchTestById = asyncHandler(async (req, res) => {
     const { testId } = req.params;
     const test = await Test.findById(testId)
-        .populate('questions', 'questionText options correctIndex marks')
+        
 
     if (!test) {
         return res.status(404).json({ message: "Test not found" });
@@ -101,5 +115,125 @@ const fetchTestById = asyncHandler(async (req, res) => {
     });
 })
 
+const updateTestById = asyncHandler(async(req, res)=>{
+    const {testId} = req.params;
+    const { title, description, questions, durationMinutes, durationHours, testDateTime}  = req.body;
+    if (!title || !Array.isArray(questions) ) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+    const durationMin = Number(durationMinutes);
+    const durationHr = Number(durationHours);
+    const duration = durationMin + durationHr * 60;
 
-export {createTest, getUpcomingTestsAdmin, getRecentTestsAdmin, deleteTestById, fetchTestById};
+    const test = await Test.findByIdAndUpdate(testId, {
+        title,
+        description,
+        questions,
+        durationMinutes: duration,
+        testDateTime
+    })
+
+    if(!test){
+        return res.status(404).json({message: "Test not found"})
+    }
+    res.status(200).json({
+        success: true,
+        message: "Test updated successfully"
+    })
+})
+
+ const getAllowedLiveTestsForUser = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+
+  const user = await User.findById(userId).populate('allowedTests');
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  const now = new Date();
+
+  const liveTests = user.allowedTests.filter((test) => {
+    const startTime = new Date(test.testDateTime);
+    const endTime = new Date(startTime.getTime() + test.durationMinutes * 60000);
+    return now >= startTime && now <= endTime;
+  });
+
+  res.status(200).json({success: true, allowedTests: liveTests });
+    });
+
+
+const getAllowedUpcomingTestsForUser = asyncHandler(async (req, res) => {
+
+    const { userId } = req.params;
+
+  const user = await User.findById(userId).populate('allowedTests');
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  const now = new Date();
+
+  const upcomingTests = user.allowedTests.filter((test) => {
+    const startTime = new Date(test.testDateTime);
+    return now < startTime;
+  });
+
+  res.status(200).json({success:true, upcomingTests});
+})
+
+const getAllowedRecentTestsForUser = asyncHandler(async (req, res) => {
+    const {userId} = req.params;
+
+  const user = await User.findById(userId).populate('allowedTests');
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  const tests = user.allowedTests
+
+  const now = new Date();
+
+  const recentTests = tests.filter((test) => {
+    const startTime = new Date(test.testDateTime);
+    const endTime = new Date(startTime.getTime() + test.durationMinutes * 60000);
+    return endTime < now;
+  });
+
+  res.status(200).json({
+    success: true,
+    recentTests,
+  });
+})
+
+const deleteTestForUser = asyncHandler(async(req,res)=> {
+    const {userId, testId} = req.body;
+    const user = await User.findById(userId);
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+    
+    const allowedTests = user.allowedTests.filter((test) => test.toString() !== testId);
+    console.log(allowedTests, testId)
+    user.allowedTests = allowedTests;
+    await user.save();
+    res.status(200).json({
+        success: true,
+        message: "Test deleted successfully"
+    });
+
+})
+
+
+export {createTest,
+     getUpcomingTestsAdmin,
+      getRecentTestsAdmin,
+       deleteTestById,
+        fetchTestById, 
+        updateTestById,
+         getAllowedLiveTestsForUser,
+         getAllowedUpcomingTestsForUser,
+         getAllowedRecentTestsForUser,
+            deleteTestForUser
+        };

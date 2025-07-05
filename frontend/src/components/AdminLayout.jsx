@@ -115,6 +115,9 @@ const AdminLayout = () => {
       const res = await getUser({ roll }).unwrap();
 
       if (res?.success) {
+
+        const date = new Date(res.dob)
+        const dateValue = date.toISOString().split("T")[0];
         setId(res._id);
         setRoll(res.universityRoll);
         toast.success(`User found: ${res.name}`);
@@ -126,7 +129,7 @@ const AdminLayout = () => {
         setNewRoll(res.universityRoll || "");
         setSection(res.section || "");
         setSemester(res.semester || "");
-        setDob(Date(res.dob) || null);
+        setDob(dateValue || null);
       } else {
         toast.error(
           res?.error?.data?.message || res?.error.error || "User not found"

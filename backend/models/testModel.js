@@ -32,6 +32,10 @@ const testSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  studentsAppeared: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
 }, {
   timestamps: true
 });

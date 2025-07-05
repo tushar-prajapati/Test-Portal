@@ -36,6 +36,40 @@ export const testApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['Test'],
         }),
+        updateTest: builder.mutation({
+            query: ({testId, test}) =>({
+                url: `${TESTS_URL}/${testId}`,
+                method: 'PUT',
+                body: test,
+            }),
+            invalidatesTags: ['Test'],
+        }),
+        getAllowedLiveTestsForUser: builder.query({
+            query: (userId)=>({
+                url: `${TESTS_URL}/live/${userId}`,
+            }),
+            providesTags: ['Test'],
+        }),
+        getAllowedUpcomingTestsForUser: builder.query({
+            query: (userId) => ({
+                url: `${TESTS_URL}/users/upcoming/${userId}`,
+            }),
+            providesTags: ['Test'],
+        }),
+        getAllowedRecentTestsForUser: builder.query({
+            query: (userId) => ({
+                url: `${TESTS_URL}/users/recent/${userId}`,
+            }),
+            providesTags: ['Test'],
+        }),
+        deleteTestForUser: builder.mutation({
+            query: ({userId, testId}) => ({
+                url: `${TESTS_URL}/users/delete`,
+                method: 'POST',
+                body: {userId, testId},
+            }),
+            invalidatesTags: ['Test'],
+        }),
     }),
 })
 
@@ -45,4 +79,9 @@ export const {
       useGetUpcomingTestsQuery,
        useDeleteTestByIdMutation,
         useFetchTestByIdQuery,
+        useUpdateTestMutation,
+        useGetAllowedLiveTestsForUserQuery,
+        useGetAllowedUpcomingTestsForUserQuery,
+        useGetAllowedRecentTestsForUserQuery,
+        useDeleteTestForUserMutation,
     } = testApiSlice;

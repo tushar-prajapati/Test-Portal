@@ -34,6 +34,9 @@ const CreateTestModal = ({ onClose }) => {
   const [createTest, { isLoading }] = useCreateTestMutation();
 
   const handleAddQuestion = () => {
+    if(question.correctIndex<0 || question.correctIndex >3){
+      toast.error("Invalid correct index");
+    }
     if (
       !question.questionText ||
       question.correctIndex === "" ||

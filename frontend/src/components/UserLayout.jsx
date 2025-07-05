@@ -108,7 +108,7 @@ const UserLayout = () => {
               } cursor-pointer w-full flex text-sm text-left px-6 py-6 rounded-tl-full rounded-bl-full navText font-bold`}
             >
               <GrScorecard className="text-xl mx-2" />
-              RESULTS
+              RECENT/RESULTS
             </button>
           </nav>
         </div>
@@ -129,9 +129,10 @@ const UserLayout = () => {
       ) : (
         <div className="h-full w-[85%] bg-[#0f0f10] flex items-center ">
           <div
-            className="bg-[#f4f4f4] p-4 h-[95%] w-[98%] rounded-4xl"
+            className="bg-cover bg-no-repeat container  h-[95%] w-[98%] rounded-4xl"
             style={{ boxShadow: "inset 0 0 20px rgba(0, 0, 0, 0.8)" }}
           >
+            <div className="h-full w-full bg-white/90 p-4 rounded-4xl">
             <main className="flex-1 overflow-y-auto p-6 relative">
               <div className="flex justify-between items-center mb-6">
                 <div>
@@ -172,6 +173,7 @@ const UserLayout = () => {
 
               <Outlet />
             </main>
+            </div>
           </div>
         </div>
       )}
