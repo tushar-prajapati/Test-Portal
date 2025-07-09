@@ -22,6 +22,10 @@ const questionSchema = new mongoose.Schema({
   testId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Test'
+  },
+  answered: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
