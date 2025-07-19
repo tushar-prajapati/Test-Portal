@@ -145,6 +145,4 @@ Have bugs or feature suggestions? Open an issue [here](https://github.com/tushar
 
 ---
 
-## 🪪 License
 
-Licensed under the **ISC License**.
